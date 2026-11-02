@@ -294,7 +294,7 @@ html.dragging-dial,html.dragging-dial body{touch-action:none!important;overscrol
 }
 
 @media (max-width:690px) and (min-height:541px){.variant-b .instrument{padding-bottom:52px!important}}
-</style><link rel="stylesheet" href="holonav.css"><link rel="stylesheet" href="pattern-v5.css"><link rel="stylesheet" href="keyboard-v6.css"></head><body data-variant="A"><main id="app" class="app variant-a"></main><script>
+</style><link rel="stylesheet" href="holonav.css"><link rel="stylesheet" href="pattern-v5.css"><link rel="stylesheet" href="keyboard-v6.css"><link rel="stylesheet" href="free-scroll-v7.css"></head><body data-variant="A"><main id="app" class="app variant-a"></main><script>
 'use strict';
 const VARIANT = document.body.dataset.variant;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -547,4 +547,4 @@ window.addEventListener('blur',()=>{for(const n of [...pressed])touchNote(n,fals
 }
 function drawScope(){const canv=$('#scope'),ctx=canv.getContext('2d');if(ctx){const {width:w,height:h}=canv;ctx.fillStyle='#081810';ctx.fillRect(0,0,w,h);ctx.strokeStyle='#2e463a';ctx.beginPath();ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();ctx.strokeStyle='#9ef09a';ctx.lineWidth=1.8;ctx.beginPath();if(engine.analyser){const b=new Uint8Array(engine.analyser.fftSize);engine.analyser.getByteTimeDomainData(b);for(let x=0;x<w;x++){const i=Math.floor(x/w*b.length),y=b[i]/255*h;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}}else{for(let x=0;x<w;x++){const y=h/2+Math.sin(x*.08)*3;if(!x)ctx.moveTo(x,y);else ctx.lineTo(x,y);}}ctx.stroke();}requestAnimationFrame(drawScope);}
 build();initEvents();refreshDials();refreshSeq();drawScope();
-</script><script src="holonav.js"></script><script src="pattern-v5.js"></script><script src="keyboard-v6.js"></script></body></html>
+</script><script src="holonav.js"></script><script src="pattern-v5.js"></script><script src="keyboard-v6.js"></script><script src="free-scroll-v7.js"></script></body></html>
