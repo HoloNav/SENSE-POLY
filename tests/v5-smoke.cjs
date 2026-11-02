@@ -73,6 +73,7 @@ async function main() {
           synthDisplay:getComputedStyle(document.querySelector('.performance-strip')).display,
           scrollHeight:document.scrollingElement.scrollHeight,clientHeight:document.scrollingElement.clientHeight};
       });
+      console.log(name,'DEBUG_SEQ',JSON.stringify(seq));
       assert.equal(seq.seqDisplay,'flex','Recording keyboard active on seq tab');
       assert.equal(seq.synthDisplay,'none','Synth keyboard hidden on seq tab');
       assert.ok(seq.grid.height>=250,'Full 32-pad grid should be generously sized');
