@@ -1,0 +1,327 @@
+/* S.E.N.S.E. POLY V6 — Anchored keys + independently scrollable controls.
+ * In landscape on phones, the synth and sequencer keyboards remain playable
+ * in bottom docks above the persistent transport.
+ * Only the instrument content ABOVE the keyboards scrolls.
+ * Knob gestures still use the existing touch-action:none drag handler.
+ */
+
+@media (orientation: landscape) and (max-height: 540px) {
+  /* Restore the familiar horizontal, full-width piano on the SYNTH tab. */
+  .variant-a .synth-view .synth-layout{
+    display:flex!important;
+    flex-direction:column!important;
+    grid-template-columns:none!important;
+    grid-template-rows:none!important;
+    gap:3px!important;
+    min-height:0!important;
+    height:100%!important;
+    width:100%!important;
+    overflow:hidden!important;
+  }
+  .variant-a .synth-layout > .bank-tabs{
+    grid-column:auto!important;
+    grid-row:auto!important;
+    flex:none!important;
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    width:100%!important;
+    margin:0!important;
+    min-height:27px!important;
+    height:27px!important;
+  }
+  .variant-a .synth-layout .bank-tab{
+    min-height:27px!important;
+    height:27px!important;
+  }
+  /* Own scrolling viewport; keyboard and transport stay outside it. */
+  .variant-a .synth-layout > .bank-stage{
+    grid-column:auto!important;
+    grid-row:auto!important;
+    flex:1 1 0%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    overscroll-behavior-y:contain!important;
+    touch-action:pan-y!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding:2px 5px 10px!important;
+    scrollbar-color:#655d9c #081126;
+    scrollbar-width:thin;
+  }
+  /* Old V3/V5 panels clipped their own contents. Let bank-stage do it. */
+  .variant-a .bank-stage .bank-panel{
+    display:flex!important;
+    flex-direction:column!important;
+    height:auto!important;
+    min-height:100%!important;
+    overflow:visible!important;
+    padding:0 2px 10px!important;
+    gap:7px!important;
+  }
+  .variant-a .bank-stage .bank-panel > .panel{
+    height:auto!important;
+    min-height:0!important;
+    flex:none!important;
+    overflow:visible!important;
+    padding:9px 12px!important;
+  }
+  .variant-a .bank-stage .bank-panel .panel-header{
+    min-height:21px!important;
+    padding-bottom:4px!important;
+    margin-bottom:7px!important;
+  }
+  .variant-a .bank-stage .bank-panel .panel-header h2{font-size:12px!important}
+  .variant-a .bank-stage .bank-panel .detail-row{
+    margin-top:8px!important;
+  }
+  .variant-a .bank-stage .bank-panel .section-note{
+    display:block!important;
+    margin:5px 0 3px!important;
+    font-size:10px!important;
+  }
+  .variant-a .bank-stage .osc-page .osc-module{
+    max-height:none!important;
+    min-height:120px!important;
+    padding:9px 10px!important;
+  }
+  .variant-a .bank-stage .osc-selector{margin:2px 0 9px!important}
+  .variant-a .bank-stage .osc-select{min-height:32px!important}
+  .variant-a .bank-stage .osc-page .dial{
+    min-height:79px!important;
+    width:77px!important;
+  }
+  .variant-a .bank-stage .osc-page .dial-face{
+    width:42px!important;height:42px!important;
+  }
+  .variant-a .bank-stage .featured-knobs .dial{
+    min-height:89px!important;
+    width:81px!important;
+    gap:3px!important;
+  }
+  .variant-a .bank-stage .featured-knobs .dial-face{
+    width:46px!important;height:46px!important;
+  }
+  .variant-a .bank-stage .bank-panel[data-bank-panel="env"] .knob-row{
+    flex-wrap:wrap!important;
+  }
+  .variant-a .bank-stage .bank-panel[data-bank-panel="env"] .dial{
+    min-height:82px!important;width:75px!important;gap:2px!important;
+  }
+  .variant-a .bank-stage .bank-panel[data-bank-panel="env"] .dial-face{
+    width:43px!important;height:43px!important;
+  }
+  /* Don't force the modulation panel into a clipped 124px grid. */
+  .variant-a .bank-stage .bank-panel[data-bank-panel="mod"] .module{
+    height:auto!important;
+    min-height:175px!important;
+    max-height:none!important;
+    overflow:visible!important;
+    grid-template-rows:23px minmax(55px,auto) minmax(32px,auto) minmax(32px,auto)!important;
+  }
+
+  /* Full-width synth keyboard, stationary along the bottom of the synth tab. */
+  .variant-a .synth-layout > .performance-strip{
+    grid-column:auto!important;
+    grid-row:auto!important;
+    flex:0 0 112px!important;
+    width:100%!important;
+    height:112px!important;
+    min-height:112px!important;
+    max-height:112px!important;
+    padding:3px 6px 5px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:3px!important;
+    margin:0!important;
+    overflow:hidden!important;
+    border-radius:3px!important;
+  }
+  .variant-a .synth-layout .performance-keybar{
+    flex:0 0 25px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    justify-content:flex-start!important;
+    align-items:center!important;
+    gap:5px!important;
+    min-height:25px!important;
+    height:25px!important;
+    max-height:25px!important;
+    overflow:hidden!important;
+  }
+  .variant-a .synth-layout .performance-keybar strong{
+    width:auto!important;
+    margin-right:auto!important;
+    text-align:left!important;
+    white-space:nowrap!important;
+    font-size:10px!important;
+  }
+  .variant-a .synth-layout .performance-keybar .key-rec{
+    display:inline-flex!important;
+    align-items:center!important;
+    min-height:24px!important;
+    padding:2px 7px!important;
+  }
+  .variant-a .synth-layout .performance-keybar .key-oct{
+    min-height:24px!important;padding:2px 7px!important;
+  }
+  .variant-a .synth-layout .performance-keys{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    width:100%!important;
+    padding:2px!important;
+    overflow:hidden!important;
+  }
+  .variant-a .synth-layout .performance-keys .keyboard{
+    width:100%!important;
+    height:100%!important;
+    min-width:0!important;
+  }
+  .variant-a .synth-layout .performance-keys .key.white{height:100%!important}
+  .variant-a .synth-layout .performance-keys .key.black{height:63%!important}
+  /* Recording keyboard stays prominent instead of collapsing to 57px. */
+  .variant-a .seq-view .seq-panel{
+    height:100%!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:4px!important;
+    padding:3px 6px!important;
+    overflow:hidden!important;
+  }
+  .variant-a .seq-panel > .panel-header{display:none!important}
+  .variant-a .seq-panel > .seq-v5-main{
+    flex:1 1 0%!important;
+    min-height:0!important;
+    height:auto!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr)!important;
+    grid-template-rows:minmax(0,auto)!important;
+    gap:7px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-y!important;
+    overscroll-behavior-y:contain!important;
+    align-content:start!important;
+    scrollbar-width:thin;
+    scrollbar-color:#655d9c #081126;
+    padding-bottom:6px!important;
+  }
+  .variant-a .seq-panel .seq-v5-overview{
+    grid-column:1!important;
+    grid-row:1!important;
+    min-width:0!important;
+    min-height:175px!important;
+    height:auto!important;
+    overflow:visible!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  .variant-a .seq-panel .seq-v5-overview .full-grid-label{
+    display:block!important;
+    min-height:15px!important;
+    margin:0 0 3px!important;
+    font-size:9px!important;
+  }
+  .variant-a .seq-panel .seq-v5-overview .seq-grid{
+    display:grid!important;
+    height:157px!important;
+    min-height:157px!important;
+    max-height:none!important;
+    flex:none!important;
+    grid-template-columns:repeat(8,minmax(0,1fr))!important;
+    grid-template-rows:repeat(4,minmax(0,1fr))!important;
+    gap:3px!important;
+  }
+  .variant-a .seq-panel .seq-v5-studio{
+    grid-column:2!important;
+    grid-row:1!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:3px!important;
+    height:auto!important;
+    min-height:195px!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  .variant-a .seq-panel .seq-v5-studio .seq-subpanel{
+    flex:none!important;
+    min-height:90px!important;
+    height:auto!important;
+    overflow:visible!important;
+    grid-row:auto!important;grid-column:auto!important;
+  }
+  .variant-a .seq-panel .seq-v5-studio .seq-modes{
+    flex:none!important;
+    min-height:26px!important;
+    margin:2px 0!important;
+  }
+  .variant-a .seq-panel .seq-v5-studio .seq-preset-bar{
+    flex:none!important;
+    height:23px!important;min-height:23px!important;
+  }
+  .variant-a .seq-panel .pattern-launcher{
+    flex:none!important;
+  }
+  .variant-a .seq-panel > .seq-key-deck{
+    grid-column:auto!important;
+    grid-row:auto!important;
+    flex:0 0 106px!important;
+    height:106px!important;
+    min-height:106px!important;
+    max-height:106px!important;
+    width:100%!important;
+    margin:0!important;
+    padding:4px 6px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  .variant-a .seq-panel .seq-key-top{
+    flex:none!important;
+    min-height:26px!important;
+    height:26px!important;
+    max-height:26px!important;
+    gap:7px!important;
+    overflow:visible!important;
+  }
+  .variant-a .seq-panel .seq-key-title{
+    display:flex!important;
+    min-width:75px!important;
+  }
+  .variant-a .seq-panel .seq-key-keys{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    margin:2px 0!important;
+    padding:2px!important;
+    overflow:hidden!important;
+  }
+  .variant-a .seq-panel .seq-key-keys .keyboard{
+    min-width:0!important;
+    width:100%!important;
+    height:100%!important;
+  }
+  .variant-a .seq-panel .seq-key-keys .key.white{
+    height:100%!important;
+  }
+  .variant-a .seq-panel .seq-key-keys .key.black{
+    height:63%!important;
+  }
+  .variant-a .seq-panel .seq-record-status{display:none!important}
+}
+
+/* Allow independent touch scrolling on Android, including on tablet-like
+   landscape screens taller than 540px, while keeping the keyboard anchored. */
+@media (orientation: landscape) and (min-height: 541px) {
+  .variant-a .synth-layout > .bank-stage{
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain!important;
+    touch-action:pan-y!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+}
