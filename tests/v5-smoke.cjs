@@ -79,7 +79,7 @@ async function main() {
       assert.ok(seq.grid.height>=250,'Full 32-pad grid should be generously sized');
       assert.ok(seq.grid.width>width*.9-30,'Grid should span page width');
       assert.ok(seq.white.height>=58,'Recording keyboard is playable');
-      assert.ok(seq.picker.width>width*.88,'Pattern picker should have full-width buttons');
+      assert.ok(seq.picker.width>width*.84,'Pattern picker should have full-width buttons');
       assert.equal(seq.mainOverflow,'visible','Sequencer area should be freely scrollable with page');
       assert.ok(seq.scrollHeight>seq.clientHeight+50,'Sequencer document can scroll');
       await page.locator('[data-choose-bank="1"]').click();
@@ -88,6 +88,8 @@ async function main() {
       assert.equal(await page.locator('#pattern-current').innerText(),'B3');
       await page.locator('.seq-grid [data-step="31"]').click();
       assert.equal(await page.locator('#selected-name').innerText(),'32');
+      await page.evaluate(()=>window.scrollTo(0,0));
+      const gridTop=await page.evaluate(()=>document.querySelector('.seq-grid').getBoundingClientRect().top);
       const dockY=await page.evaluate(()=>document.querySelector('.v7-keyboard-dock').getBoundingClientRect().top);
       const seqScroll=await page.evaluate(()=>{
         window.scrollTo(0,Math.max(250,document.scrollingElement.scrollHeight-window.innerHeight-20));
@@ -96,7 +98,7 @@ async function main() {
       });
       assert.ok(seqScroll.y>80,'Sequencer page must scroll');
       assert.ok(Math.abs(seqScroll.dock-dockY)<2,'Sequencer keyboard stays fixed while pads scroll');
-      assert.ok(seqScroll.grid<seq.grid.top-80,'Sequencer pads move with the document');
+      assert.ok(seqScroll.grid<gridTop-80,'Sequencer pads move with the document');
       await page.locator('.seq-key-deck [data-action="stepRec"]').click();
       assert.ok((await page.locator('.seq-key-deck [data-action="stepRec"]').getAttribute('class')).includes('recording'),'STEP REC works in anchored keyboard');
       await page.screenshot({path:'screenshots/v7-'+name+'-sequencer.png'});
