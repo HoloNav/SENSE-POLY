@@ -325,3 +325,10 @@
     -webkit-overflow-scrolling:touch!important;
   }
 }
+
+/* IMPORTANT: the active control bank alone occupies the scroll area.
+   V6's display:flex!important must never override the core .hidden rule. */
+.variant-a .bank-stage .bank-panel.hidden,
+.variant-a .bank-stage .osc-page.hidden {
+  display:none!important;
+}
