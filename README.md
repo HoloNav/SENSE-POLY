@@ -1,38 +1,35 @@
-# S.E.N.S.E. POLY — HoloNav V6 Anchored Keyboard
+# S.E.N.S.E. POLY — HoloNav V7 Free-Scroll Studio
 
-**[Launch S.E.N.S.E. POLY](https://holonav.github.io/SENSE-POLY/)**
+**[Launch S.E.N.S.E. POLY](https://holonav.github.io/SENSE-POLY/?v=7)**
 
-Selected **tabbed** browser synthesizer prototype, in HoloNav's deep-space navy/cyan/violet interface. This is a functioning Web Audio preview—not a circuit-accurate Poly D clone or native Android app.
+Tabbed browser synthesizer prototype in HoloNav's deep-space navy, holographic cyan and violet design. A functional Web Audio preview—not a circuit-accurate Poly D model or native Android build.
 
-## V6: stationary keyboards, scrollable controls
+## V7: Only the keyboard is fixed
 
-- **SYNTH tab:** In landscape the keyboard occupies the **full width along the bottom**. The control-bank tabs remain visible, and the active controls **scroll independently above the keyboard**. On portrait screens, the existing bottom keyboard also stays in place while the synth controls can scroll.
-- **SEQUENCER tab:** Its landscape recording keyboard now has a **120px-high dock** (approximately 74px of playable white-key height on an 844×390 simulated phone). The 32-step grid stays to the left of the pattern/editor area, but both editor and grid move in a **separately scrollable content region above the keyboard**.
-- **Touch gesture priority:** Knob drags continue to manipulate knobs; swipe the non-knob panel area to scroll. The **PLAY / STOP / PANIC / TEMPO** transport remains outside and below the keyboard.
-- The 32-step pattern grid, all 64 pattern memories, STEP REC, LIVE REC, octave buttons and all audio-engine parameters are unchanged.
+This revision changes the V6 constrained-screen layout at the user's request.
 
-## Choose a pattern
+- The **entire webpage scrolls normally** in portrait and landscape. The oscillator/filter/envelope/mod/output knobs, 32-step grid, pattern controls, workspace tabs, and Play/Stop/Panic/Tempo transport are **not fixed**.
+- The **keyboard alone remains docked across the bottom**, and its white keys remain large enough to play in landscape.
+- The synth's control banks grow vertically instead of being clipped into a short scrolling window. Touches and swipes in the panel area scroll the page; dragging a knob still changes that knob.
+- In the sequencer, **pattern-selection buttons A–H / 1–8 appear above the 32-step grid**. The full grid is visible in a roomy four-row layout, followed by step editing controls. The keyboard is fixed below.
+- The original, event-wired synth and recording keyboards were *moved* into a shared dock; no duplicate keyboards or sound engines were introduced.
+- Swapping between **SYNTH** and **SEQUENCER** automatically switches the dock to the corresponding keyboard.
 
-Use the **BANK A–H** and **PATTERN 1–8** buttons on the sequencer tab. A lit dot means there are programmed notes. Choosing a new pattern stops playback; press **PLAY** to hear the newly selected pattern. Pattern data is retained.
+## Patterns, recording and saved projects
 
-## Recording
+Eight banks (A–H) × eight patterns = 64 pattern memories, with up to 32 steps per pattern. The bank/pattern buttons select slots; choosing another pattern stops playback by design. STEP REC writes a note and advances. LIVE REC plus PLAY quantizes performed notes to the playback step, with gate values up to one step. These recording functions are prototype features.
 
-- **STEP REC:** Arm STEP REC, tap a keyboard note to enter a step, and keep entering successive notes. Use REST in the Performance subtab when needed.
-- **LIVE REC:** Arm LIVE REC, press PLAY, and perform notes on the sequencer keyboard as the pattern loops. Notes are quantized to steps, and held-key gate length is captured for up to one step.
-- This remains a **quantized monophonic overdub preview**. It does not provide full unquantized MIDI recording or automatically join multi-step ties.
+Use **MEMORY → SAVE PATTERN** to store changes in the browser, and **EXPORT** for a JSON backup. Source-code updates on GitHub do not back up browser storage.
 
-## Save your work
+## Files and verification
 
-Use **MEMORY → SAVE PATTERN** to write to browser local storage. Use **EXPORT** to save a JSON backup. Browser data is not automatically backed up to the GitHub repository.
+- `index.html`: original Web Audio engine, sequencer logic, settings and transport.
+- `holonav.css` / `holonav.js`: V4 HoloNav styling and sequencer keyboard.
+- `pattern-v5.css` / `pattern-v5.js`: V5 64-pattern launcher.
+- `keyboard-v6.css` / `keyboard-v6.js`: preserved previous layout.
+- `free-scroll-v7.css` / `free-scroll-v7.js`: **current layout**, fixed keyboard only / normal document scroll.
+- `tests/v5-smoke.cjs`: mobile-browser regression tests used by the GitHub Actions layout workflow.
 
-## Project files
+The V6 version is preserved as the `backup/v6-anchored-keyboard` branch.
 
-- `index.html`: V3 Web Audio engine, synth controls, sequencer core and transport
-- `holonav.css` + `holonav.js`: V4 orbital appearance and sequencer keyboard
-- `pattern-v5.css` + `pattern-v5.js`: V5 one-touch pattern selector
-- `keyboard-v6.css` + `keyboard-v6.js`: V6 full-width stationary keyboards and scrollable control areas
-- `tests/v5-smoke.cjs` + GitHub Actions: Chrome checks at **390×844**, **360×700**, **844×390** and **740×360**, including pattern B3, step 32, hidden-bank visibility, keyboard size/location, independent scrolling and JavaScript errors
-
-The V5 release remains available as the Git branch `backup/v5-pattern-studio`.
-
-**Brand direction:** HoloNav deep-space navy, orbital navigation motifs, violet and holographic cyan. Unaffiliated with Behringer.
+Unaffiliated with, and not endorsed by, Behringer.
