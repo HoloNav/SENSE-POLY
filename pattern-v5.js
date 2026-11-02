@@ -89,6 +89,32 @@
   });
   paintLauncher();
 
+  // In a phone's landscape orientation, 37 notes in the side-mounted
+  // keyboard become too narrow for fingers. Show two complete octaves
+  // instead; the existing OCT +/- buttons still shift their range.
+  const previousKeyboardMarkup=keyboardMarkup;
+  keyboardMarkup=function(el) {
+    previousKeyboardMarkup(el);
+    if(!el || !window.matchMedia('(orientation: landscape) and (max-height: 540px)').matches)return;
+    const start=48+keyboardOctave*12,end=start+23;
+    const keys=[];let whites=0;
+    for(let n=start;n<=end;n++){
+      const black=[1,3,6,8,10].includes(n%12);
+      if(!black)whites++;
+      keys.push({n,black});
+    }
+    let wi=0;
+    el.innerHTML=keys.map(({n,black})=>{
+      const x=black?(wi-.36)/whites*100:wi++/whites*100;
+      const w=(black?.72:1)/whites*100;
+      return `<button type="button" class="key ${black?'black':'white'}" data-note="${n}" style="left:${x}%;width:${w}%" aria-label="Play ${midiName(n)}" title="${midiName(n)}">${!black&&n%12===0?midiName(n):''}</button>`;
+    }).join('');
+    const readout=el.dataset.keyboard==='seq'?'#seq-octave-readout':'#octave-readout';
+    const display=document.querySelector(readout);
+    if(display)display.textContent=midiName(start)+' — '+midiName(end);
+  };
+  document.querySelectorAll('.keyboard').forEach(keyboardMarkup);
+
   const logo=document.querySelector('.logo small');
   if(logo)logo.textContent='HOLONAV · ORBITAL SYNTHESIS / V5';
   const foot=document.querySelector('.meta-foot span');
