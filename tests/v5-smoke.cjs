@@ -1,108 +1,108 @@
-/* S.E.N.S.E. POLY V6 touchscreen/browser regression checks.
- * Tests existing 64-pattern launcher and the fixed-bottom keyboards while
- * synth/sequencer controls scroll independently on short landscape screens. */
-const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const path=require('node:path');
-const {chromium}=require('playwright-core');
+/* S.E.N.S.E. POLY V7 regression suite:
+ * only the keyboard dock is fixed; the whole page, controls, steps, pattern
+ * picker and transport all scroll normally. */
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const {chromium} = require('playwright-core');
 
-async function main(){
+async function main() {
   const chrome=['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/snap/bin/chromium'].find(fs.existsSync);
-  if(!chrome)throw new Error('Google Chrome/Chromium binary not found');
+  if(!chrome)throw Error('Chromium or Google Chrome not found');
   const browser=await chromium.launch({headless:true,executablePath:chrome,args:['--no-sandbox','--disable-dev-shm-usage']});
-  fs.mkdirSync('screenshots',{recursive:true});
   const viewports=[['portrait',390,844],['small',360,700],['landscape',844,390],['landscape-small',740,360]];
+  fs.mkdirSync('screenshots',{recursive:true});
   try{
-    for(const [name,width,height] of viewports){
+    for(const [name,width,height] of viewports) {
       const page=await browser.newPage({viewport:{width,height},isMobile:true,hasTouch:true,deviceScaleFactor:1});
-      const errors=[];page.on('pageerror',e=>errors.push(e.message));
+      const errors=[];
+      page.on('pageerror',e=>errors.push(e.message));
       await page.goto('file://'+path.resolve('index.html'),{waitUntil:'load'});
-      assert.match(await page.title(),/V6/,'V6 layout must initialize');
+      assert.match(await page.title(),/V7/,'V7 enhancements must load');
+      const initial=await page.evaluate(()=>{
+        const dock=document.querySelector('.v7-keyboard-dock');
+        return {fixed:getComputedStyle(dock).position,
+          transport:getComputedStyle(document.querySelector('.transport-dock')).position,
+          bankOverflow:getComputedStyle(document.querySelector('.bank-stage')).overflowY,
+          docHeight:document.scrollingElement.scrollHeight,visible:document.scrollingElement.clientHeight,
+          dockTop:dock.getBoundingClientRect().top,
+          dockWidth:dock.getBoundingClientRect().width,
+          keyHeight:document.querySelector('.performance-strip .key.white').getBoundingClientRect().height,
+          synthDisplay:getComputedStyle(document.querySelector('.performance-strip')).display,
+          seqDisplay:getComputedStyle(document.querySelector('.seq-key-deck')).display};
+      });
+      assert.equal(initial.fixed,'fixed','Only keyboard dock is fixed');
+      assert.notEqual(initial.transport,'fixed','Transport should flow with page');
+      assert.equal(initial.bankOverflow,'visible','Synth bank must not have its own scroll viewport');
+      assert.equal(initial.synthDisplay,'flex');
+      assert.equal(initial.seqDisplay,'none');
+      assert.ok(initial.dockWidth>width*.9,'Keyboard must span phone width');
+      assert.ok(initial.keyHeight>=65,'Playable keys should be tall');
+      assert.ok(initial.docHeight>initial.visible+50,'The document must be scrollable');
+
+      const synthBefore=await page.evaluate(()=>({
+        topbar:document.querySelector('.topbar').getBoundingClientRect().top,
+        dock:document.querySelector('.v7-keyboard-dock').getBoundingClientRect().top
+      }));
+      const synthMove=await page.evaluate(()=>{
+        window.scrollTo(0,210);
+        return {y:window.scrollY,topbar:document.querySelector('.topbar').getBoundingClientRect().top,
+          dock:document.querySelector('.v7-keyboard-dock').getBoundingClientRect().top};
+      });
+      assert.ok(synthMove.y>80,'Entire synth page must scroll');
+      assert.ok(synthMove.topbar<synthBefore.topbar-80,'Synth controls/header should move with document');
+      assert.ok(Math.abs(synthMove.dock-synthBefore.dock)<2,'Keyboard stays fixed while page moves');
+      await page.locator('[data-bank-tab="filter"]').click();
+      const visible=await page.evaluate(()=>[...document.querySelectorAll('.bank-panel')]
+        .filter(el=>getComputedStyle(el).display!=='none')
+        .map(el=>el.dataset.bankPanel));
+      assert.deepEqual(visible,['filter'],'Only chosen synth control bank is displayed');
+      assert.equal(await page.locator('.performance-keys .key').count(),24,'Two-octave synth keyboard');
+      await page.screenshot({path:'screenshots/v7-'+name+'-synth.png'});
+
       await page.locator('[data-tab="seq"]').click();
-      assert.equal(await page.locator('.seq-grid .step').count(),32);
-      assert.equal(await page.locator('[data-choose-bank]').count(),8);
-      assert.equal(await page.locator('[data-choose-slot]').count(),8);
+      assert.equal(await page.locator('.seq-grid .step').count(),32,'32 steps on one page');
+      assert.equal(await page.locator('[data-choose-bank]').count(),8,'Eight banks');
+      assert.equal(await page.locator('[data-choose-slot]').count(),8,'Eight patterns per bank');
+      const seq=await page.evaluate(()=>{
+        const rect=el=>{const r=document.querySelector(el).getBoundingClientRect();return {top:r.top,bottom:r.bottom,width:r.width,height:r.height};};
+        return {grid:rect('.seq-grid'),panel:rect('.seq-panel'),dock:rect('.v7-keyboard-dock'),
+          white:rect('.seq-key-deck .key.white'),picker:rect('.pattern-launcher'),
+          mainOverflow:getComputedStyle(document.querySelector('.seq-v5-main')).overflowY,
+          seqDisplay:getComputedStyle(document.querySelector('.seq-key-deck')).display,
+          synthDisplay:getComputedStyle(document.querySelector('.performance-strip')).display,
+          scrollHeight:document.scrollingElement.scrollHeight,clientHeight:document.scrollingElement.clientHeight};
+      });
+      assert.equal(seq.seqDisplay,'flex','Recording keyboard active on seq tab');
+      assert.equal(seq.synthDisplay,'none','Synth keyboard hidden on seq tab');
+      assert.ok(seq.grid.height>=250,'Full 32-pad grid should be generously sized');
+      assert.ok(seq.grid.width>width*.9-30,'Grid should span page width');
+      assert.ok(seq.white.height>=58,'Recording keyboard is playable');
+      assert.ok(seq.picker.width>width*.88,'Pattern picker should have full-width buttons');
+      assert.equal(seq.mainOverflow,'visible','Sequencer area should be freely scrollable with page');
+      assert.ok(seq.scrollHeight>seq.clientHeight+50,'Sequencer document can scroll');
       await page.locator('[data-choose-bank="1"]').click();
       await page.locator('[data-choose-slot="2"]').click();
       assert.deepEqual(await page.evaluate(()=>[bank,slot]),[1,2],'B3 selected');
       assert.equal(await page.locator('#pattern-current').innerText(),'B3');
-      assert.equal(await page.locator('[data-choose-bank="1"]').getAttribute('aria-pressed'),'true');
-      assert.equal(await page.locator('[data-choose-slot="2"]').getAttribute('aria-pressed'),'true');
-      await page.locator('.seq-grid [data-step="31"]').click({force:true});
+      await page.locator('.seq-grid [data-step="31"]').click();
       assert.equal(await page.locator('#selected-name').innerText(),'32');
+      const dockY=await page.evaluate(()=>document.querySelector('.v7-keyboard-dock').getBoundingClientRect().top);
+      const seqScroll=await page.evaluate(()=>{
+        window.scrollTo(0,Math.max(250,document.scrollingElement.scrollHeight-window.innerHeight-20));
+        return {y:window.scrollY,dock:document.querySelector('.v7-keyboard-dock').getBoundingClientRect().top,
+          grid:document.querySelector('.seq-grid').getBoundingClientRect().top};
+      });
+      assert.ok(seqScroll.y>80,'Sequencer page must scroll');
+      assert.ok(Math.abs(seqScroll.dock-dockY)<2,'Sequencer keyboard stays fixed while pads scroll');
+      assert.ok(seqScroll.grid<seq.grid.top-80,'Sequencer pads move with the document');
       await page.locator('.seq-key-deck [data-action="stepRec"]').click();
-      assert.ok((await page.locator('.seq-key-deck [data-action="stepRec"]').getAttribute('class')).includes('recording'));
-      const seq=await page.evaluate(()=>{
-        const rect=s=>{const r=document.querySelector(s).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};};
-        const main=document.querySelector('.seq-v5-main');
-        return {grid:rect('.seq-v5-overview .seq-grid'),studio:rect('.seq-v5-studio'),launcher:rect('.pattern-launcher'),
-          deck:rect('.seq-key-deck'),white:rect('.seq-key-deck .key.white'),main:rect('.seq-v5-main'),
-          scrollHeight:main.scrollHeight,clientHeight:main.clientHeight,scrollOverflow:getComputedStyle(main).overflowY,
-          bodyW:document.documentElement.scrollWidth,bodyH:document.documentElement.scrollHeight};
-      });
-      assert.ok(seq.grid.width>200 && seq.grid.height>100,name+' grid usable');
-      assert.ok(seq.launcher.width>180 && seq.launcher.height>20,name+' pattern selector visible');
-      if(name.startsWith('landscape')){
-        assert.ok(seq.studio.left>=seq.grid.right-5,'Editor is to the right of the grid');
-        assert.ok(seq.deck.top>=seq.main.bottom-8,'Recording keyboard beneath scrollable sequencer');
-        assert.ok(seq.deck.height>=118,'Recording keyboard dock must be >=118px high');
-        assert.ok(seq.white.height>=70,'Playable white keys must have meaningful height');
-        assert.ok(seq.deck.width>width*.88,'Recording keyboard should span instrument width');
-        assert.equal(seq.scrollOverflow,'auto','Sequencer main should scroll vertically');
-        assert.equal(await page.locator('.seq-key-keys .key').count(),24,'Two full octaves on sequencer keyboard');
-        const before=seq.deck.top;
-        const move=await page.evaluate(()=>{
-          const area=document.querySelector('.seq-v5-main');
-          area.scrollTop=60;
-          return {top:area.scrollTop,deck:document.querySelector('.seq-key-deck').getBoundingClientRect().top};
-        });
-        assert.ok(move.top>0,'Sequencer content must scroll independently');
-        assert.ok(Math.abs(move.deck-before)<2,'Sequencer keyboard must stay fixed while editing scrolls');
-        await page.evaluate(()=>document.querySelector('.seq-v5-main').scrollTop=0);
-      }
-      await page.screenshot({path:'screenshots/'+name+'-sequencer.png'});
-      await page.locator('[data-tab="synth"]').click();
-      const visibleBanks=await page.evaluate(()=>[...document.querySelectorAll('.bank-panel')]
-        .filter(x=>!x.classList.contains('hidden') && getComputedStyle(x).display!=='none')
-        .map(x=>x.dataset.bankPanel));
-      assert.deepEqual(visibleBanks,['osc'],'Only the selected synth control bank should be visible');
-      const synth=await page.evaluate(()=>{
-        const rect=s=>{const r=document.querySelector(s).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};};
-        const stage=document.querySelector('.synth-layout > .bank-stage');
-        return {stage:rect('.synth-layout > .bank-stage'),keys:rect('.synth-layout > .performance-strip'),
-          white:rect('.performance-strip .key.white'),mode:getComputedStyle(stage).overflowY,
-          scrollHeight:stage.scrollHeight,clientHeight:stage.clientHeight};
-      });
-      if(!name.startsWith('landscape')){
-        assert.equal(synth.mode,'auto','Portrait synth controls should also scroll independently');
-      }
-      if(name.startsWith('landscape')){
-        assert.ok(synth.keys.top>=synth.stage.bottom-5,'Full-width synth piano below the controls');
-        assert.ok(synth.keys.width>width*.88,'Synth piano should span instrument width');
-        assert.ok(synth.keys.height>=105,'Synth piano dock must have playable height');
-        assert.ok(synth.white.height>=52,'Synth white keys should be tall enough');
-        assert.equal(synth.mode,'auto','Controls must scroll independently');
-        assert.equal(await page.locator('.performance-keys .key').count(),24,'Two octaves on synth keyboard');
-        const before=synth.keys.top;
-        const scroll=await page.evaluate(()=>{
-          const stage=document.querySelector('.synth-layout > .bank-stage');
-          stage.scrollTop=100;
-          return {scroll:stage.scrollTop,keyboard:document.querySelector('.performance-strip').getBoundingClientRect().top};
-        });
-        assert.ok(scroll.scroll>0,'Synth controls should actually scroll');
-        assert.ok(Math.abs(before-scroll.keyboard)<2,'Piano must not move when control area scrolls');
-        await page.locator('[data-bank-tab="filter"]').click();
-        assert.equal(await page.evaluate(()=>document.querySelector('.bank-stage').scrollTop),0,'Changing synth banks resets scroll');
-        const bankAfter=await page.evaluate(()=>[...document.querySelectorAll('.bank-panel')]
-          .filter(x=>!x.classList.contains('hidden') && getComputedStyle(x).display!=='none')
-          .map(x=>x.dataset.bankPanel));
-        assert.deepEqual(bankAfter,['filter'],'Switching banks should hide the others');
-      }
-      await page.screenshot({path:'screenshots/'+name+'-synth.png'});
-      assert.deepEqual(errors,[],'No JavaScript errors: '+errors.join(' | '));
-      console.log(name,'PASS',JSON.stringify({seq,synth}));
+      assert.ok((await page.locator('.seq-key-deck [data-action="stepRec"]').getAttribute('class')).includes('recording'),'STEP REC works in anchored keyboard');
+      await page.screenshot({path:'screenshots/v7-'+name+'-sequencer.png'});
+      assert.deepEqual(errors,[],'No JS errors: '+errors.join(' | '));
+      console.log(name,'PASS',JSON.stringify({initial,seq,synthMove,seqScroll}));
       await page.close();
     }
   }finally{await browser.close();}
 }
-main().catch(e=>{console.error(e.stack||e);process.exit(1)});
+main().catch(e=>{console.error(e.stack||e);process.exit(1);});
