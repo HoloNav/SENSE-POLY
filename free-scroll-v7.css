@@ -435,7 +435,7 @@ body .variant-a .seq-panel .detail-row{margin:9px 0!important;}
 /* The ONLY fixed user interface element is the active, full-width piano. */
 :root{--v7-keys-h:clamp(134px,19dvh,180px);}
 @media (orientation:landscape) and (max-height:600px){
-  :root{--v7-keys-h:clamp(120px,30dvh,152px);}
+  :root{--v7-keys-h:clamp(150px,39dvh,182px);}
 }
 .v7-keyboard-dock{
   position:fixed!important;
