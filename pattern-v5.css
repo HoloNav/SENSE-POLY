@@ -1,0 +1,186 @@
+/* S.E.N.S.E. POLY V5 — Pattern Launcher + Android landscape studio
+   Extends the HoloNav V4 interface; no changes to synthesizer DSP. */
+.pattern-launcher{
+  flex:none;display:flex;flex-direction:column;gap:3px;
+  padding:5px 6px;
+  border:1px solid #41608b;background:linear-gradient(110deg,#102447,#131535);
+  box-shadow:inset 0 1px 0 #76d7ee26;
+  border-radius:3px;min-width:0;
+}
+.pattern-row{
+  display:grid;grid-template-columns:50px repeat(8,minmax(0,1fr));
+  gap:3px;align-items:center;min-width:0;
+}
+.pattern-row-label{
+  color:#95c7e1;font-size:8px;line-height:1.1;
+  font-weight:900;letter-spacing:.065em;
+}
+.pattern-pick{
+  min-width:0;min-height:26px;height:26px;position:relative;
+  border:1px solid #354d7e;border-radius:2px;
+  background:linear-gradient(145deg,#1d3057,#101831);
+  color:#bed6f6;font:bold 11px/1 ui-monospace,monospace;
+  touch-action:manipulation;cursor:pointer;
+  box-shadow:inset 0 1px 0 #7c9bcb24;
+}
+.pattern-pick.occupied{color:#eef9ff}
+.pattern-pick .pattern-led{
+  position:absolute;right:3px;bottom:3px;width:3px;height:3px;
+  border-radius:50%;background:transparent;
+}
+.pattern-pick.occupied .pattern-led{background:#9a86ff;box-shadow:0 0 4px #a18bff}
+.pattern-pick.selected{
+  background:linear-gradient(145deg,#78e8ed,#97b1ff 70%,#b49aff);
+  border-color:#bbfcff;color:#08142b;
+  box-shadow:0 0 11px #63dff84a,inset 0 1px 0 #fff8;
+}
+.pattern-pick.selected .pattern-led{background:#41418d}
+.pattern-pick:focus-visible{outline:2px solid #b7ecff;outline-offset:1px}
+.pattern-footer{display:none;align-items:center;justify-content:space-between;
+ color:#84a9d8;font:8px ui-monospace,monospace;letter-spacing:.05em}
+.pattern-footer #pattern-current{color:#91f5f5;font-weight:900}
+/* Keep native bank/slot selects in the DOM, but use the more accessible
+   eight-bank/eight-pattern buttons as the visible selection surface. */
+.seq-panel .seq-preset-bar .seq-tools > label:nth-child(-n+2){display:none!important}
+.seq-panel{display:flex!important;flex-direction:column!important;min-height:0!important}
+.seq-panel .seq-v5-main{
+  flex:1;min-height:0;display:flex;flex-direction:column;
+  gap:0;overflow:hidden;
+}
+.seq-panel .seq-v5-studio{display:contents}
+.seq-panel .pattern-launcher{order:0}
+.seq-panel .seq-preset-bar{order:1;min-height:27px;height:27px;max-height:27px;
+  margin:2px 0!important;align-items:center!important}
+.seq-panel .seq-preset-bar .seq-tools .label{font-size:8px}
+.seq-panel .seq-preset-bar .seq-tools select{min-height:24px!important;height:24px}
+.seq-panel .seq-v5-overview{order:2;display:flex;flex-direction:column;min-height:0;flex:none}
+.seq-panel .seq-v5-overview .full-grid-label{min-height:15px;margin:2px 0!important}
+.seq-panel .seq-v5-overview .seq-grid{
+  height:clamp(126px,19dvh,170px)!important;max-height:170px;
+  min-height:0!important;grid-template-rows:repeat(4,minmax(0,1fr))!important;
+  grid-column:auto!important;grid-row:auto!important;
+}
+.seq-panel .seq-v5-studio .seq-modes{order:3;margin:5px 0 3px!important;min-height:29px}
+.seq-panel .seq-v5-studio .seq-subpanel{
+  order:4;flex:1;min-height:0;overflow:hidden;
+}
+.seq-panel .seq-key-deck{order:2;flex:none}
+.seq-panel .seq-v5-studio .seq-subpanel .step-editor{margin:0;padding:4px}
+@media(min-width:700px) and (min-height:541px){
+  .seq-panel .pattern-launcher{max-width:850px;width:100%;align-self:center}
+  .seq-panel .seq-v5-overview .seq-grid{height:clamp(165px,26dvh,250px)!important;max-height:250px}
+  .seq-panel .seq-key-deck{min-height:100px}
+}
+@media(max-width:690px){
+  .pattern-launcher{padding:4px}
+  .pattern-row{grid-template-columns:48px repeat(8,minmax(0,1fr));gap:3px}
+  .pattern-pick{height:27px;min-height:27px;font-size:11px}
+  .seq-panel .seq-v5-overview .seq-grid{
+    height:clamp(126px,18.5dvh,156px)!important;max-height:156px}
+}
+@media(max-height:700px) and (orientation:portrait){
+  .pattern-pick{height:24px;min-height:24px}
+  .pattern-launcher{gap:2px;padding:3px}
+  .seq-panel .seq-v5-overview .seq-grid{height:120px!important}
+  .seq-panel .seq-preset-bar{height:22px;min-height:22px}
+  .seq-panel .seq-v5-studio .seq-modes{margin:2px 0!important}
+  .seq-panel .seq-key-deck{height:87px!important}
+}
+/* Wide-but-short Android layout: 32 steps + pattern bank/editor on two
+   adjacent surfaces, with the live-input keyboard across the bottom. */
+@media(orientation:landscape) and (max-height:540px) {
+  .instrument{padding:3px 9px 0!important}
+  .topbar{min-height:33px!important;max-height:33px!important}
+  .header-controls .indicator,.header-controls .display,.header-controls .scope{display:none!important}
+  .workspace-tabs{margin:1px 0 3px!important}
+  .workspace-tabs .btn{min-height:29px!important}
+  .seq-panel{padding:3px 5px!important;gap:3px!important}
+  .seq-panel>.panel-header{display:none!important}
+  .seq-panel .seq-v5-main{
+    display:grid!important;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);
+    grid-template-rows:minmax(0,1fr);column-gap:8px;min-height:0;
+  }
+  .seq-panel .seq-v5-overview{
+    grid-column:1;grid-row:1;height:100%;min-height:0;overflow:hidden;
+  }
+  .seq-panel .seq-v5-overview .full-grid-label{display:none!important}
+  .seq-panel .seq-v5-overview .seq-grid{
+    flex:1;height:100%!important;max-height:none!important;
+    min-height:0!important;gap:3px;
+    grid-column:auto!important;grid-row:auto!important;
+  }
+  .seq-panel .seq-v5-studio{
+    grid-column:2;grid-row:1;display:flex!important;
+    flex-direction:column;gap:2px;min-height:0;overflow:hidden;
+  }
+  .seq-panel .seq-v5-studio .seq-preset-bar{
+    order:0;min-height:23px;max-height:23px;height:23px;margin:0!important;
+    grid-column:auto!important;grid-row:auto!important;
+  }
+  .seq-panel .seq-v5-studio .pattern-launcher{
+    order:1;flex:none;padding:2px 4px;gap:2px;
+  }
+  .seq-panel .pattern-row{grid-template-columns:48px repeat(8,minmax(0,1fr));gap:2px}
+  .seq-panel .pattern-pick{min-height:22px;height:22px;font-size:10px}
+  .seq-panel .pattern-row-label{font-size:8px}
+  .seq-panel .seq-v5-studio .seq-modes{
+    order:2;grid-column:auto!important;grid-row:auto!important;
+    margin:1px 0!important;min-height:25px;gap:3px!important;
+  }
+  .seq-panel .seq-v5-studio .seq-mode{
+    min-height:25px!important;height:25px!important;font-size:9px!important;
+  }
+  .seq-panel .seq-v5-studio .seq-subpanel{
+    order:3;flex:1;min-height:0;overflow:hidden;
+    grid-column:auto!important;grid-row:auto!important;
+  }
+  .seq-panel .seq-v5-studio .seq-subpanel>.seq-head{display:none!important}
+  .seq-panel .seq-v5-studio .seq-subpanel .step-editor{
+    display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:2px!important;padding:2px!important;
+  }
+  .seq-panel .seq-v5-studio .step-editor .wide{grid-column:span 3}
+  .seq-panel .seq-v5-studio .step-editor .label{font-size:8px}
+  .seq-panel .seq-v5-studio .step-editor select{min-height:23px!important;height:23px}
+  .seq-panel .seq-v5-studio .step-editor .range-row input{min-height:23px}
+  .seq-panel .seq-v5-studio .step-editor .toggle{min-height:23px!important;height:23px;padding:2px!important}
+  .seq-panel .seq-key-deck{
+    flex:none!important;grid-column:auto!important;grid-row:auto!important;
+    height:57px!important;min-height:57px!important;padding:2px 4px!important;
+  }
+  .seq-key-top{min-height:24px!important}
+  .seq-key-keys{min-height:0;flex:1}
+  .seq-record-status{display:none!important}
+  /* Instrument view: a proper two-column control+performance surface.
+     A taller keyboard replaces the previous tiny full-width strip. */
+  .synth-layout{
+    height:100%;min-height:0;display:grid!important;
+    grid-template-columns:minmax(0,1.22fr) minmax(0,.78fr);
+    grid-template-rows:28px minmax(0,1fr);gap:4px 8px!important;
+  }
+  .synth-layout>.bank-tabs{
+    grid-column:1;grid-row:1;align-self:stretch;
+    margin:0!important;min-width:0;
+  }
+  .synth-layout>.bank-stage{
+    grid-column:1;grid-row:2;min-height:0;height:100%;
+  }
+  .synth-layout>.performance-strip{
+    grid-column:2;grid-row:1/3;min-height:0!important;height:100%!important;
+    display:flex!important;flex-direction:column!important;
+    padding:6px!important;gap:4px!important;
+  }
+  .synth-layout .performance-keybar{
+    flex:none;height:auto!important;min-height:42px!important;
+    display:flex!important;flex-wrap:wrap!important;
+    justify-content:space-around;align-items:center;gap:3px;
+  }
+  .synth-layout .performance-keybar strong{width:100%;text-align:center}
+  .synth-layout .performance-keybar .key-rec{display:none!important}
+  .synth-layout .performance-keys{flex:1;min-height:0;height:auto!important}
+  .synth-layout .performance-keys .keyboard{height:100%!important}
+  .synth-layout .performance-keys .key.white{height:100%!important}
+  .synth-layout .performance-keys .key.black{height:63%!important}
+  .synth-layout .bank-panel .panel{padding:4px 6px!important}
+  .synth-layout .bank-panel .panel-header{padding-bottom:2px}
+}
