@@ -270,10 +270,10 @@
   .variant-a .seq-panel > .seq-key-deck{
     grid-column:auto!important;
     grid-row:auto!important;
-    flex:0 0 106px!important;
-    height:106px!important;
-    min-height:106px!important;
-    max-height:106px!important;
+    flex:0 0 120px!important;
+    height:120px!important;
+    min-height:120px!important;
+    max-height:120px!important;
     width:100%!important;
     margin:0!important;
     padding:4px 6px!important;
@@ -331,4 +331,31 @@
 .variant-a .bank-stage .bank-panel.hidden,
 .variant-a .bank-stage .osc-page.hidden {
   display:none!important;
+}
+
+/* Also allow the portrait synth-control area to scroll above its already
+   anchored keyboard. Only the control bank is a scroll container. */
+@media (orientation:portrait) {
+  .variant-a .synth-layout > .bank-stage{
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    touch-action:pan-y!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:contain!important;
+    padding-bottom:7px!important;
+    scrollbar-width:thin;
+    scrollbar-color:#655d9c #081126;
+  }
+  .variant-a .bank-stage .bank-panel:not(.hidden){
+    height:auto!important;
+    min-height:100%!important;
+    overflow:visible!important;
+  }
+  .variant-a .bank-stage .bank-panel:not(.hidden) > .panel{
+    height:auto!important;
+    flex:none!important;
+    overflow:visible!important;
+  }
+  .variant-a .bank-stage .bank-panel.hidden,
+  .variant-a .bank-stage .osc-page.hidden{display:none!important}
 }
