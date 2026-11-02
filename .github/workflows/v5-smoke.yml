@@ -1,4 +1,4 @@
-name: V6 Anchored Keyboard Layout Smoke Test
+name: V7 Free-Scroll Keyboard Layout Test
 
 on:
   workflow_dispatch:
@@ -12,6 +12,8 @@ on:
       - 'pattern-v5.css'
       - 'keyboard-v6.js'
       - 'keyboard-v6.css'
+      - 'free-scroll-v7.js'
+      - 'free-scroll-v7.css'
       - 'tests/v5-smoke.cjs'
       - '.github/workflows/v5-smoke.yml'
 
@@ -35,6 +37,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: SENSE-POLY-V6-layout
+          name: SENSE-POLY-V7-layout
           path: screenshots/
           if-no-files-found: ignore
