@@ -52,6 +52,10 @@ async function test() {
         });
         assert.ok(synth.keysLeft>=synth.bankRight-10,'Landscape synth keyboard must be beside controls');
         assert.ok(synth.keysHeight>100,'Landscape synth keyboard must be taller than the old strip');
+        assert.equal(await page.locator('.performance-keys .key').count(),24,
+          'Landscape synth keyboard must show two playable octaves');
+        assert.equal(await page.locator('.seq-key-keys .key').count(),24,
+          'Landscape recording keyboard must show two playable octaves');
       }
       await page.screenshot({path:'screenshots/'+name+'-synth.png'});
       assert.deepEqual(errors,[],'No browser JavaScript errors: '+errors.join(' | '));
