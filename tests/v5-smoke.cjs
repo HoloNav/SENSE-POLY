@@ -45,8 +45,8 @@ async function main(){
       if(name.startsWith('landscape')){
         assert.ok(seq.studio.left>=seq.grid.right-5,'Editor is to the right of the grid');
         assert.ok(seq.deck.top>=seq.main.bottom-8,'Recording keyboard beneath scrollable sequencer');
-        assert.ok(seq.deck.height>=100,'Recording keyboard dock must be >=100px high');
-        assert.ok(seq.white.height>=52,'Playable white keys must have meaningful height');
+        assert.ok(seq.deck.height>=118,'Recording keyboard dock must be >=118px high');
+        assert.ok(seq.white.height>=70,'Playable white keys must have meaningful height');
         assert.ok(seq.deck.width>width*.88,'Recording keyboard should span instrument width');
         assert.equal(seq.scrollOverflow,'auto','Sequencer main should scroll vertically');
         assert.equal(await page.locator('.seq-key-keys .key').count(),24,'Two full octaves on sequencer keyboard');
@@ -73,6 +73,9 @@ async function main(){
           white:rect('.performance-strip .key.white'),mode:getComputedStyle(stage).overflowY,
           scrollHeight:stage.scrollHeight,clientHeight:stage.clientHeight};
       });
+      if(!name.startsWith('landscape')){
+        assert.equal(synth.mode,'auto','Portrait synth controls should also scroll independently');
+      }
       if(name.startsWith('landscape')){
         assert.ok(synth.keys.top>=synth.stage.bottom-5,'Full-width synth piano below the controls');
         assert.ok(synth.keys.width>width*.88,'Synth piano should span instrument width');
