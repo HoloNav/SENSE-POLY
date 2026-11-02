@@ -62,6 +62,10 @@ async function main(){
       }
       await page.screenshot({path:'screenshots/'+name+'-sequencer.png'});
       await page.locator('[data-tab="synth"]').click();
+      const visibleBanks=await page.evaluate(()=>[...document.querySelectorAll('.bank-panel')]
+        .filter(x=>!x.classList.contains('hidden') && getComputedStyle(x).display!=='none')
+        .map(x=>x.dataset.bankPanel));
+      assert.deepEqual(visibleBanks,['osc'],'Only the selected synth control bank should be visible');
       const synth=await page.evaluate(()=>{
         const rect=s=>{const r=document.querySelector(s).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};};
         const stage=document.querySelector('.synth-layout > .bank-stage');
@@ -86,6 +90,10 @@ async function main(){
         assert.ok(Math.abs(before-scroll.keyboard)<2,'Piano must not move when control area scrolls');
         await page.locator('[data-bank-tab="filter"]').click();
         assert.equal(await page.evaluate(()=>document.querySelector('.bank-stage').scrollTop),0,'Changing synth banks resets scroll');
+        const bankAfter=await page.evaluate(()=>[...document.querySelectorAll('.bank-panel')]
+          .filter(x=>!x.classList.contains('hidden') && getComputedStyle(x).display!=='none')
+          .map(x=>x.dataset.bankPanel));
+        assert.deepEqual(bankAfter,['filter'],'Switching banks should hide the others');
       }
       await page.screenshot({path:'screenshots/'+name+'-synth.png'});
       assert.deepEqual(errors,[],'No JavaScript errors: '+errors.join(' | '));
