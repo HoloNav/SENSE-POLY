@@ -1,35 +1,42 @@
-# S.E.N.S.E. POLY — HoloNav V7 Free-Scroll Studio
+# S.E.N.S.E. POLY — HoloNav V8 Signature Keybed
 
-**[Launch S.E.N.S.E. POLY](https://holonav.github.io/SENSE-POLY/?v=7)**
+**[Launch S.E.N.S.E. POLY V8](https://holonav.github.io/SENSE-POLY/?v=8)**
 
-Tabbed browser synthesizer prototype in HoloNav's deep-space navy, holographic cyan and violet design. A functional Web Audio preview—not a circuit-accurate Poly D model or native Android build.
+A Poly D-inspired browser synthesizer prototype with HoloNav's deep-space navy, cyan and violet interface. It is a functional Web Audio preview, not a circuit-accurate hardware emulation or native Android synthesizer.
 
-## V7: Only the keyboard is fixed
+## V8 — S.E.N.S.E. Keybed
 
-This revision changes the V6 constrained-screen layout at the user's request.
+A consistent playable piano design for future **S.E.N.S.E.** software instruments.
 
-- The **entire webpage scrolls normally** in portrait and landscape. The oscillator/filter/envelope/mod/output knobs, 32-step grid, pattern controls, workspace tabs, and Play/Stop/Panic/Tempo transport are **not fixed**.
-- The **keyboard alone remains docked across the bottom**, and its white keys remain large enough to play in landscape.
-- The synth's control banks grow vertically instead of being clipped into a short scrolling window. Touches and swipes in the panel area scroll the page; dragging a knob still changes that knob.
-- In the sequencer, **pattern-selection buttons A–H / 1–8 appear above the 32-step grid**. The full grid is visible in a roomy four-row layout, followed by step editing controls. The keyboard is fixed below.
-- The original, event-wired synth and recording keyboards were *moved* into a shared dock; no duplicate keyboards or sound engines were introduced.
-- Swapping between **SYNTH** and **SEQUENCER** automatically switches the dock to the corresponding keyboard.
+- **Three complete octaves plus ending C:** **C3–C6** (37 labeled semitone positions, 22 white keys and 15 black keys). Every key—including black keys—shows its note.
+- **White keys:** 54 CSS px wide and 132 CSS px of visible playable height. **Black keys:** 29 CSS px wide and 62% tall. These fixed proportions stay identical on the SYNTH and SEQUENCER tabs.
+- **ACID-08-style piano:** rounded lower key edges, ivory/graphite key faces and direct black-key overlays. S.E.N.S.E. POLY retains HoloNav cyan/violet accents when pressed.
+- **Constant finger-friendly dimensions** across portrait and landscape; the full 1,188px keyboard is **horizontally scrollable** on narrower screens rather than squashed to fit.
+- **Fixed bottom keyboard:** The rest of the entire page, including synth controls, pattern pads, workspaces and transport, continues to scroll normally.
+- **Octave controls:** OCT + / – shift the same three-octave keyboard range in both workspaces. The visible range readouts update.
+- No audio-engine, sequencer or recording logic was changed for V8.
 
-## Patterns, recording and saved projects
+See **[S.E.N.S.E. Keybed Design Standard](SENSE-KEYBED-SPEC.md)** for geometry and behaviors to keep consistent across future synth projects.
 
-Eight banks (A–H) × eight patterns = 64 pattern memories, with up to 32 steps per pattern. The bank/pattern buttons select slots; choosing another pattern stops playback by design. STEP REC writes a note and advances. LIVE REC plus PLAY quantizes performed notes to the playback step, with gate values up to one step. These recording functions are prototype features.
+## Sequencing and recording
 
-Use **MEMORY → SAVE PATTERN** to store changes in the browser, and **EXPORT** for a JSON backup. Source-code updates on GitHub do not back up browser storage.
+The sequencer still offers 32 steps visible together, **eight banks A–H** and **eight patterns per bank** (64 pattern memories). Changing patterns stops playback intentionally; press PLAY to start the selected pattern.
 
-## Files and verification
+- **STEP REC:** Select a starting step, arm recording and tap piano notes. Each entered note advances the selected step.
+- **LIVE REC:** Arm recording, press PLAY, then perform notes on the sequencer keyboard. They quantize to the running step. Held notes can set gates up to one step.
+- Save via **MEMORY → SAVE PATTERN** to browser storage; export a JSON project for an independent backup.
 
-- `index.html`: original Web Audio engine, sequencer logic, settings and transport.
-- `holonav.css` / `holonav.js`: V4 HoloNav styling and sequencer keyboard.
-- `pattern-v5.css` / `pattern-v5.js`: V5 64-pattern launcher.
-- `keyboard-v6.css` / `keyboard-v6.js`: preserved previous layout.
-- `free-scroll-v7.css` / `free-scroll-v7.js`: **current layout**, fixed keyboard only / normal document scroll.
-- `tests/v5-smoke.cjs`: mobile-browser regression tests used by the GitHub Actions layout workflow.
+These remain prototype recording functions rather than a full MIDI recorder.
 
-The V6 version is preserved as the `backup/v6-anchored-keyboard` branch.
+## Source and verification
 
-Unaffiliated with, and not endorsed by, Behringer.
+- `index.html` — original synth/audio/sequencer core
+- `holonav.css` / `holonav.js` — HoloNav theme and sequencer key input
+- `pattern-v5.css` / `pattern-v5.js` — 64-pattern selector
+- `free-scroll-v7.css` / `free-scroll-v7.js` — normal page scrolling with keyboard dock
+- `sense-keybed-v8.css` / `sense-keybed-v8.js` — **current signature keybed**
+- `tests/v5-smoke.cjs` and `tests/v8-keybed.cjs` — Chrome tests at portrait 390×844 and 360×700, landscape 844×390 and 740×360, checking keyboard dimensions, labels, octave shifting, pattern controls and page scrolling
+
+Previous V7 state is preserved as the GitHub branch `backup/v7-free-scroll-studio`.
+
+Inspired by classic synth hardware workflows; unaffiliated with Behringer.
