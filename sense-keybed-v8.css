@@ -7,7 +7,7 @@
 :root {
   --sense-white-width:54px;
   --sense-black-width:29px;
-  --sense-key-height:132px;
+  --sense-key-height:134px;
   --sense-keyboard-dock:190px;
   --v7-keys-h:var(--sense-keyboard-dock) !important;
 }
