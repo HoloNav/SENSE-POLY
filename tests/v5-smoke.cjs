@@ -1,4 +1,4 @@
-/* S.E.N.S.E. POLY V7 regression suite:
+/* S.E.N.S.E. POLY V8 keyboard and free-scroll regression suite:
  * only the keyboard dock is fixed; the whole page, controls, steps, pattern
  * picker and transport all scroll normally. */
 const assert = require('node:assert/strict');
@@ -18,7 +18,7 @@ async function main() {
       const errors=[];
       page.on('pageerror',e=>errors.push(e.message));
       await page.goto('file://'+path.resolve('index.html'),{waitUntil:'load'});
-      assert.match(await page.title(),/V7/,'V7 enhancements must load');
+      assert.match(await page.title(),/V8/,'V8 signature keybed must load');
       const initial=await page.evaluate(()=>{
         const dock=document.querySelector('.v7-keyboard-dock');
         return {fixed:getComputedStyle(dock).position,
@@ -57,8 +57,8 @@ async function main() {
         .filter(el=>getComputedStyle(el).display!=='none')
         .map(el=>el.dataset.bankPanel));
       assert.deepEqual(visible,['filter'],'Only chosen synth control bank is displayed');
-      assert.equal(await page.locator('.performance-keys .key').count(),24,'Two-octave synth keyboard');
-      await page.screenshot({path:'screenshots/v7-'+name+'-synth.png'});
+      assert.equal(await page.locator('.performance-keys .key').count(),37,'Three-octave synth keyboard + end C');
+      await page.screenshot({path:'screenshots/v8-'+name+'-synth.png'});
 
       await page.locator('[data-tab="seq"]').click();
       assert.equal(await page.locator('.seq-grid .step').count(),32,'32 steps on one page');
@@ -75,6 +75,7 @@ async function main() {
       });
       console.log(name,'DEBUG_SEQ',JSON.stringify(seq));
       assert.equal(seq.seqDisplay,'flex','Recording keyboard active on seq tab');
+      assert.equal(await page.locator('.seq-key-keys .key').count(),37,'Three-octave sequencer keyboard + end C');
       assert.equal(seq.synthDisplay,'none','Synth keyboard hidden on seq tab');
       assert.ok(seq.grid.height>=250,'Full 32-pad grid should be generously sized');
       assert.ok(seq.grid.width>width*.9-30,'Grid should span page width');
@@ -101,7 +102,7 @@ async function main() {
       assert.ok(seqScroll.grid<gridTop-80,'Sequencer pads move with the document');
       await page.locator('.seq-key-deck [data-action="stepRec"]').click();
       assert.ok((await page.locator('.seq-key-deck [data-action="stepRec"]').getAttribute('class')).includes('recording'),'STEP REC works in anchored keyboard');
-      await page.screenshot({path:'screenshots/v7-'+name+'-sequencer.png'});
+      await page.screenshot({path:'screenshots/v8-'+name+'-sequencer.png'});
       assert.deepEqual(errors,[],'No JS errors: '+errors.join(' | '));
       console.log(name,'PASS',JSON.stringify({initial,seq,synthMove,seqScroll}));
       await page.close();
