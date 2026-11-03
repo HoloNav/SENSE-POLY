@@ -1,4 +1,4 @@
-name: V7 Free-Scroll Keyboard Layout Test
+name: V8 S.E.N.S.E. Signature Keybed Test
 
 on:
   workflow_dispatch:
@@ -14,6 +14,9 @@ on:
       - 'keyboard-v6.css'
       - 'free-scroll-v7.js'
       - 'free-scroll-v7.css'
+      - 'sense-keybed-v8.js'
+      - 'sense-keybed-v8.css'
+      - 'tests/v8-keybed.cjs'
       - 'tests/v5-smoke.cjs'
       - '.github/workflows/v5-smoke.yml'
 
@@ -33,10 +36,12 @@ jobs:
         run: npm install --no-save playwright-core@1.56.1
       - name: Check browser layout and pattern switching
         run: node tests/v5-smoke.cjs
+      - name: Check V8 key dimensions, notes, octave shifts, and scrolling
+        run: node tests/v8-keybed.cjs
       - name: Upload phone-sized screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: SENSE-POLY-V7-layout
+          name: SENSE-POLY-V8-keybed
           path: screenshots/
           if-no-files-found: ignore
